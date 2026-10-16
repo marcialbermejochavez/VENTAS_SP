@@ -1,0 +1,78 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<title>Clientes</title>
+</head>
+
+<body class="bg-light">
+	<div class="container py-4"><a th:href="@{/menu}">← Menú</a>
+		<h2>Clientes</h2>
+		<form class="row g-2 mb-3" method="get">
+			<div class="col"><input class="form-control" name="q" th:value="${q}"
+					placeholder="Buscar por nombre, apellido o DNI"></div>
+			<div class="col-auto"><button class="btn btn-secondary">Buscar</button></div>
+		</form>
+		<div class="row">
+			<div class="col-md-4">
+				<form th:action="@{/clientes/guardar}" method="post" th:object="${cliente}" class="card card-body">
+					<h5>Datos del cliente</h5><input type="hidden"
+						th:field="*{codigoCliente}"><label>Nombres</label><input class="form-control mb-2"
+						th:field="*{nombres}" required><label>Apellidos</label><input class="form-control mb-2"
+						th:field="*{apellidos}" required><label>Dirección</label><input class="form-control mb-2"
+						th:field="*{direccion}"><label>Teléfono</label><input class="form-control mb-2"
+						th:field="*{telefono}"><label>DNI</label><input class="form-control mb-2" th:field="*{dni}"
+						maxlength="8" required><label>RUC</label><input name="ruc" maxlength="20"
+						class="form-control mb-2" th:value="${cliente.ruc}"><label>Correo</label><input type="email"
+						name="correo" maxlength="30" class="form-control mb-2"
+						th:value="${cliente.correo}"><label>Categoría</label><select name="categoriaId"
+						class="form-select mb-3">
+						<option value="">Sin categoría</option>
+						<option th:each="cat:${categorias}" th:value="${cat.idcatclie}"
+							th:selected="${cliente.categoria != null and cliente.categoria.idcatclie == cat.idcatclie}"
+							th:text="${cat.nombre}"></option>
+					</select><button class="btn btn-primary">Guardar</button><a class="btn btn-link"
+						th:href="@{/clientes}">Nuevo cliente</a>
+				</form>
+			</div>
+			<div class="col-md-8">
+				<table class="table table-striped bg-white">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Nombre</th>
+							<th>DNI</th>
+							<th>RUC</th>
+							<th>Correo</th>
+							<th>Categoría</th>
+							<th>Teléfono</th>
+							<th>Acciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="c:${listaClientes}">
+							<td th:text="${c.codigoCliente}"></td>
+							<td th:text="${c.nombreCompleto}"></td>
+							<td th:text="${c.dni}"></td>
+							<td th:text="${c.ruc}"></td>
+							<td th:text="${c.correo}"></td>
+							<td th:text="${c.categoria != null ? c.categoria.nombre : '—'}"></td>
+							<td th:text="${c.telefono}"></td>
+							<td><a class="btn btn-sm btn-warning"
+									th:href="@{/clientes(editar=${c.codigoCliente})}">Editar</a>
+								<form class="d-inline" th:action="@{/clientes/eliminar/{id}(id=${c.codigoCliente})}"
+									method="post" onsubmit="return confirm('¿Eliminar cliente?')"><button
+										class="btn btn-sm btn-danger">Eliminar</button></form>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>
